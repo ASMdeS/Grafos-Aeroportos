@@ -11,23 +11,12 @@ world_airports = fr_api.get_airports()
 # Criando um dicionário que terá como chave o código ICAO e valor coordenadas
 airport_coordinates = {}
 
-# Lista de códigos ICAO de aeroportos brasileiros
-lista_icao = ['SBSR', 'SBSL', 'SBBZ', 'SBMA', 'SBEG', 'SBBR', 'SBPK', 'SBJP', 'SBNF', 'SBMQ', 'SBSG', 'SBCV', 'SBPA',
-              'SBRJ', 'SBAT', 'SBCB', 'SBMD', 'SBCR', 'SBGO', 'SBMY', 'SBJH', 'SBUR', 'SBCZ', 'SBPS', 'SBDB', 'SBRF',
-              'SBCP', 'SBLO', 'SBJV', 'SBMO', 'SBJA', 'SBJU', 'SBSP', 'SBVC', 'SBKG', 'SBCG', 'SBSJ', 'SBBI', 'SBPP',
-              'SBBV', 'SBKP', 'SBAC', 'SBPG', 'SBBG', 'SBCM', 'SBIZ', 'SBAN', 'SBJR', 'SBGV', 'SBRD', 'SBTS', 'SBSO',
-              'SBUL', 'SBFI', 'SBVG', 'SBBH', 'SBCY', 'SBNM', 'SBPF', 'SBVT', 'SBBE', 'SBTG', 'SBTF', 'SBPJ', 'SBFL',
-              'SBJI', 'SBUG', 'SBTD', 'SBMN', 'SBJE', 'SBJF', 'SBJD', 'SBTT', 'SBCF', 'SBSM', 'SBSI', 'SBHT', 'SBZM',
-              'SBIH', 'SBRB', 'SBAU', 'SBAX', 'SBTC', 'SBPB', 'SBMK', 'SBCT', 'SBPV', 'SBST', 'SBBP', 'SBLJ', 'SBME',
-              'SBFZ', 'SBPL', 'SBUA', 'SBMT', 'SBPO', 'SBLE', 'SBGL', 'SBCN', 'SBAE', 'SBIP', 'SBBW', 'SBCJ', 'SBCA',
-              'SBMG', 'SBSV', 'SBDO', 'SBFN', 'SBRP', 'SBGR', 'SBTU', 'SBSN', 'SBCX', 'SBTE', 'SBCH', 'SBDN', 'SBSC',
-              'SBTB', 'SBUF', 'SBML', 'SBAQ', 'SBAR', 'SBIL', 'SBMS', 'SBVH']
-
-# Preenchendo o dicionário
+# Preenchendo o dicionário de coordenadas com todos os aeroportos do Brasil
 for airport in world_airports:
-    icao_code = airport.icao
-    latitude, longitude = airport.latitude, airport.longitude
-    airport_coordinates[icao_code] = (latitude, longitude)
+    if airport.icao[0:2] == "SB":
+        icao_code = airport.icao
+        latitude, longitude = airport.latitude, airport.longitude
+        airport_coordinates[icao_code] = (latitude, longitude)
 
 
 # Criando a função que calculará a distância entre dois aeroportos
@@ -39,11 +28,25 @@ def calculate_distance(airport1, airport2):
 # Inicializando o dicionário que será utilizado para fazer o grafo
 dicionario_grafo = {}
 
-# Preenchendo o dicionário
-for aeroporto1 in lista_icao:
-    dicionario_grafo[aeroporto1] = {}
-    for aeroporto2 in lista_icao:
+# Criando a variável que será usada para armazenar a maior distância entre os aeroportos mais isolados do Brasil
+distancia_longinqua = 0
+
+# Calculando a maior distância entre os aeroportos mais isolados do Brasil
+for aeroporto1 in airport_coordinates:
+    aeroporto_mais_proximo = float('inf')
+    for aeroporto2 in airport_coordinates:
         if aeroporto1 != aeroporto2:
             distance_km = calculate_distance(aeroporto1, aeroporto2)
-            # print(f"Distance between {aeroporto1} and {aeroporto2}: {distance_km:.2f} km")
-            dicionario_grafo[aeroporto1][aeroporto2] = int(distance_km)
+            if distance_km < aeroporto_mais_proximo:
+                aeroporto_mais_proximo = distance_km
+    if aeroporto_mais_proximo > distancia_longinqua:
+        distancia_longinqua = aeroporto_mais_proximo
+
+# Preenchendo o dicionário para que todos os aeroportos tenham um destino, porém mantendo os vértices ao mínimo
+for aeroporto1 in airport_coordinates:
+    dicionario_grafo[aeroporto1] = {}
+    for aeroporto2 in airport_coordinates:
+        if aeroporto1 != aeroporto2:
+            distance_km = calculate_distance(aeroporto1, aeroporto2)
+            if distance_km <= distancia_longinqua:
+                dicionario_grafo[aeroporto1][aeroporto2] = int(distance_km)
