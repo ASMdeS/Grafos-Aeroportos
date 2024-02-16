@@ -1,6 +1,6 @@
-# Importando o Grafo do arquivo Grafo_Aeroportos
+import networkx as nx
+import matplotlib.pyplot as plt
 from Grafo_Aeroportos import dicionario_grafo
-
 
 # Definindo o Grafo e a função Dijkstra
 class Grafo:
@@ -23,12 +23,11 @@ class Grafo:
                 distancia_total = distancias[aeroporto_atual] + distancia
                 if distancia_total < distancias[vizinho]:
                     distancias[vizinho] = distancia_total
-                    caminhos[vizinho] = caminhos[aeroporto_atual] + [aeroporto_atual]
+                    caminhos[vizinho] = caminhos[aeroporto_atual] + [(aeroporto_atual, vizinho, distancia)]
 
         for aeroporto, quilometragem in distancias.items():
             if aeroporto == destino:
-                return quilometragem, (caminhos[aeroporto] + [aeroporto])
-
+                return quilometragem, caminhos[aeroporto]
 
 # Inicializando o Grafo com base no dicionário do arquivo Grafo_Aeroportos
 grafo_aeroporto = Grafo(dicionario_grafo)
@@ -44,3 +43,32 @@ intervalo, caminho = grafo_aeroporto.dijkstra(aeroporto_inicial, aeroporto_final
 
 # Imprimindo a resposta
 print(f"Distância: {intervalo} km. Caminho: {caminho}")
+
+# Criando um objeto grafo direcionado a partir do dicionário
+G = nx.DiGraph(dicionario_grafo)
+
+# Desenhar o grafo
+pos = nx.spring_layout(G)  # Layout para o desenho
+
+# Adicionar rótulos de peso nas arestas apenas para aquelas no caminho
+caminho_edge_labels = {(node[0], node[1]): node[2] for node in caminho}
+
+# Destacar os vértices envolvidos no caminho encontrado pelo algoritmo de Dijkstra
+if caminho:
+    caminho_nodes = set([node[0] for node in caminho] + [node[1] for node in caminho])
+    nx.draw_networkx_nodes(G, pos, nodelist=caminho_nodes, node_color='red', node_size=700)
+
+    # Adicionar rótulos dos vértices apenas para aqueles no caminho
+    labels = {node: node for node in caminho_nodes}
+    nx.draw_networkx_labels(G, pos, labels=labels)
+
+# Destacar as arestas envolvidas no caminho
+if caminho:
+    caminho_edges = [(node[0], node[1]) for node in caminho]
+    nx.draw_networkx_edges(G, pos, edgelist=caminho_edges, edge_color='red', width=2.0, arrows=True)
+
+    # Adicionar rótulos de peso nas arestas apenas para aquelas no caminho
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=caminho_edge_labels)
+
+# Exibir o desenho
+plt.show()
