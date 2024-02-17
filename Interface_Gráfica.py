@@ -24,6 +24,20 @@ class InterfaceGrafica:
         self.entry_destino.grid(row=1, column=1, padx=10, pady=5)
         self.button_visualizar.grid(row=2, column=0, columnspan=2, pady=10)
 
+         # Criando um objeto grafo direcionado a partir do dicionário
+        G = nx.DiGraph(dicionario_grafo)
+
+        # Desenhar o grafo
+        pos = nx.spring_layout(G)  # Layout para o desenho
+        nx.draw(G, pos, with_labels=True, font_weight='bold', node_size=700, node_color='skyblue', font_color='black', font_size=10, edge_color='gray', arrowsize=20)
+
+        # Adicionar rótulos de peso nas arestas
+        edge_labels = {(i, j): dicionario_grafo[i][j] for i, j in G.edges()}
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+
+        # Exibir o desenho
+        plt.show()
+
     def visualizar_grafo(self):
         aeroporto_inicial = self.entry_partida.get()
         aeroporto_final = self.entry_destino.get()
