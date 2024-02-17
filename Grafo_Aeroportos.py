@@ -1,6 +1,4 @@
 # Importando as bibliotecas que serão utilizadas no código
-import networkx as nx
-import matplotlib.pyplot as plt
 from geopy.distance import geodesic
 from FlightRadar24 import FlightRadar24API
 
@@ -46,7 +44,6 @@ for aeroporto1 in airport_coordinates:
     if aeroporto_mais_proximo > distancia_longinqua:
         distancia_longinqua = aeroporto_mais_proximo
 
-conexoes = 0
 # Preenchendo o dicionário para que todos os aeroportos tenham um destino, porém mantendo os vértices ao mínimo
 for aeroporto1 in airport_coordinates:
     dicionario_grafo[aeroporto1] = {}
@@ -55,4 +52,3 @@ for aeroporto1 in airport_coordinates:
             distance_km = calculate_distance(aeroporto1, aeroporto2)
             if distance_km <= distancia_longinqua:
                 dicionario_grafo[aeroporto1][aeroporto2] = int(distance_km)
-                conexoes += 1
