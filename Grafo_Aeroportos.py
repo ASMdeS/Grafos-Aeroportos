@@ -56,20 +56,3 @@ for aeroporto1 in airport_coordinates:
             if distance_km <= distancia_longinqua:
                 dicionario_grafo[aeroporto1][aeroporto2] = int(distance_km)
                 conexoes += 1
-
-print(aeroportos)
-print(conexoes)
-
-# Criando um objeto grafo direcionado a partir do dicionário
-G = nx.DiGraph(dicionario_grafo)
-
-# Desenhar o grafo
-pos = nx.spring_layout(G)  # Layout para o desenho
-nx.draw(G, pos, with_labels=True, font_weight='bold', node_size=700, node_color='skyblue', font_color='black', font_size=10, edge_color='gray', arrowsize=20)
-
-# Adicionar rótulos de peso nas arestas
-edge_labels = {(i, j): dicionario_grafo[i][j] for i, j in G.edges()}
-nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-
-# Exibir o desenho
-plt.show()
