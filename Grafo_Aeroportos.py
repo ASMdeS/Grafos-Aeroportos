@@ -1,5 +1,7 @@
-# Importando as bibliotecas que serão utilizadas no código
+# Importando Geopy para calcular a distância entre aeroportos
 from geopy.distance import geodesic
+
+# Importando FlightRadar24 para pegar as coordenadas dos aeroportos
 from FlightRadar24 import FlightRadar24API
 
 # Inicializando o FlightRadar24API
@@ -15,7 +17,7 @@ aeroportos = 0
 # Preenchendo o dicionário de coordenadas com todos os aeroportos do Brasil
 for airport in world_airports:
     if airport.icao[0:2] == "SB":
-        aeroportos += 1 
+        aeroportos += 1
         icao_code = airport.icao
         latitude, longitude = airport.latitude, airport.longitude
         airport_coordinates[icao_code] = (latitude, longitude)
