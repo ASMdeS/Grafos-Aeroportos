@@ -33,6 +33,6 @@ Execução:
 
 Autor:
 
-Este sistema foi desenvolvido por Arthur Santos Marinho de Souza e Felipe Santos Souza.
+Este sistema foi desenvolvido por Arthur Santos Marinho de Souza e Felipe de Souza Santos.
 
 Para sugestões, dúvidas ou contribuições, entre em contato via asms@cin.ufpe.br ou fss9@cin.ufpe.br.
